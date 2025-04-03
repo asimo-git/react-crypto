@@ -3,16 +3,16 @@ import { useContext } from "react";
 import { CryptoContext } from "../../context/crypto-context";
 import PortfolioChart from "../PortfolioChart";
 
-const siderStyle = {
-  padding: "1rem",
-  backgroundColor: "#001529",
-};
-
 export default function AppSider() {
   const { assets, cryptoPriceMap } = useContext(CryptoContext);
 
   return (
-    <Layout.Sider width="320px" style={siderStyle}>
+    <Layout.Sider
+      width="320px"
+      style={{
+        padding: "1rem",
+      }}
+    >
       <Typography.Title level={3} style={{ textAlign: "left", color: "#fff" }}>
         Portfolio:{" "}
         {assets

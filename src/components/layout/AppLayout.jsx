@@ -1,4 +1,4 @@
-import { Layout, Spin } from "antd";
+import { Layout, Spin, Flex } from "antd";
 import { useContext } from "react";
 import { CryptoContext } from "../../context/crypto-context";
 import AppContent from "./AppContent";
@@ -13,9 +13,13 @@ export default function AppLayout() {
   return (
     <Layout>
       <AppHeader />
-      <Layout>
-        <AppSider />
-        <AppContent />
+      <Layout
+        style={{ backgroundColor: "#001529", minHeight: "calc(100vh - 60px)" }}
+      >
+        <Flex wrap justify="center" style={{ width: "100%" }}>
+          <AppSider />
+          <AppContent style={{ flex: 1 }} />
+        </Flex>
       </Layout>
     </Layout>
   );
