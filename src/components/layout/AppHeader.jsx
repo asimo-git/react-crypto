@@ -12,7 +12,7 @@ const headerStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  backgroundColor: "#4096ff",
+  backgroundColor: "#565387",
 };
 
 export default function AppHeader() {

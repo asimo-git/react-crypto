@@ -1,7 +1,8 @@
-import { Layout, Typography } from "antd";
 import { useContext } from "react";
 import { CryptoContext } from "../../context/crypto-context";
-import PortfolioChart from "../PortfolioChart";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { Card, Flex, Layout, List, Statistic, Tag, Typography } from "antd";
+import { capitalize } from "../../utils";
 
 const contentStyle = {
   textAlign: "center",
@@ -13,19 +14,69 @@ const contentStyle = {
 };
 
 export default function AppContent() {
-  const { assets, cryptoPriceMap } = useContext(CryptoContext);
+  const { assets } = useContext(CryptoContext);
 
   return (
     <Layout.Content style={contentStyle}>
-      <Typography.Title level={3} style={{ textAlign: "left", color: "#fff" }}>
-        Portfolio:{" "}
-        {assets
-          .map((asset) => asset.amount * cryptoPriceMap[asset.id])
-          .reduce((acc, v) => (acc += v), 0)
-          .toFixed(2)}
-        $
-      </Typography.Title>
-      <PortfolioChart />
+      <Flex gap="middle" wrap>
+        {assets.map((asset) => (
+          <Card
+            key={asset.id}
+            style={{
+              marginBottom: "1rem",
+              maxWidth: 320,
+            }}
+          >
+            <Statistic
+              title={
+                <span
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    color: "#001529",
+                  }}
+                >
+                  {capitalize(asset.id)}
+                </span>
+              }
+              value={asset.totalAmount}
+              precision={2}
+              valueStyle={{ color: asset.grow ? "#3f8600" : "#cf1322" }}
+              prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+              suffix="$"
+            />
+            <List
+              size="small"
+              dataSource={[
+                {
+                  title: "Total Profit",
+                  value: asset.totalProfit,
+                  withTag: true,
+                },
+                { title: "Asset Amount", value: asset.amount, isPlain: true },
+              ]}
+              renderItem={(item) => (
+                <List.Item>
+                  <span style={{ marginRight: 20 }}>{item.title} </span>
+                  <span>
+                    {item.withTag && (
+                      <Tag color={asset.grow ? "green" : "red"}>
+                        {asset.growPercent}%
+                      </Tag>
+                    )}
+                    {item.isPlain && item.value}
+                    {!item.isPlain && (
+                      <Typography.Text type={asset.grow ? "success" : "danger"}>
+                        {item.value.toFixed(2)}$
+                      </Typography.Text>
+                    )}
+                  </span>
+                </List.Item>
+              )}
+            />
+          </Card>
+        ))}
+      </Flex>
     </Layout.Content>
   );
 }

@@ -1,60 +1,27 @@
-import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
-import { Card, Layout, List, Statistic, Tag, Typography } from "antd";
+import { Layout, Typography } from "antd";
 import { useContext } from "react";
 import { CryptoContext } from "../../context/crypto-context";
-import { capitalize } from "../../utils";
-const { Sider } = Layout;
+import PortfolioChart from "../PortfolioChart";
 
 const siderStyle = {
   padding: "1rem",
+  backgroundColor: "#001529",
 };
 
 export default function AppSider() {
-  const { assets } = useContext(CryptoContext);
+  const { assets, cryptoPriceMap } = useContext(CryptoContext);
 
   return (
-    <Sider width="320px" style={siderStyle}>
-      {assets.map((asset) => (
-        <Card key={asset.id} style={{ marginBottom: "1rem" }}>
-          <Statistic
-            title={capitalize(asset.id)}
-            value={asset.totalAmount}
-            precision={2}
-            valueStyle={{ color: asset.grow ? "#3f8600" : "#cf1322" }}
-            prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-            suffix="$"
-          />
-          <List
-            size="small"
-            dataSource={[
-              {
-                title: "Total Profit",
-                value: asset.totalProfit,
-                withTag: true,
-              },
-              { title: "Asset Amount", value: asset.amount, isPlain: true },
-            ]}
-            renderItem={(item) => (
-              <List.Item>
-                <span>{item.title}</span>
-                <span>
-                  {item.withTag && (
-                    <Tag color={asset.grow ? "green" : "red"}>
-                      {asset.growPercent}%
-                    </Tag>
-                  )}
-                  {item.isPlain && item.value}
-                  {!item.isPlain && (
-                    <Typography.Text type={asset.grow ? "success" : "danger"}>
-                      {item.value.toFixed(2)}$
-                    </Typography.Text>
-                  )}
-                </span>
-              </List.Item>
-            )}
-          />
-        </Card>
-      ))}
-    </Sider>
+    <Layout.Sider width="320px" style={siderStyle}>
+      <Typography.Title level={3} style={{ textAlign: "left", color: "#fff" }}>
+        Portfolio:{" "}
+        {assets
+          .map((asset) => asset.amount * cryptoPriceMap[asset.id])
+          .reduce((acc, v) => (acc += v), 0)
+          .toFixed(2)}
+        $
+      </Typography.Title>
+      <PortfolioChart />
+    </Layout.Sider>
   );
 }
