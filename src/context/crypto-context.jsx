@@ -12,6 +12,7 @@ export function CryptoContextProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [crypto, setCrypto] = useState([]);
   const [assets, setAssets] = useState([]);
+  const [cryptoPriceMap, setCryptoPriceMap] = useState({});
 
   const makeAsset = (asset, crypto) => {
     const coin = crypto.find((currency) => currency.id === asset.id);
@@ -20,6 +21,7 @@ export function CryptoContextProvider({ children }) {
       growPercent: getPercentDifference(asset.price, coin.price),
       totalAmount: asset.amount * coin.price,
       totalProfit: asset.amount * coin.price - asset.amount * asset.price,
+      name: coin.name,
       ...asset,
     };
   };
@@ -32,6 +34,12 @@ export function CryptoContextProvider({ children }) {
 
       setCrypto(result);
       setAssets(assets.map((asset) => makeAsset(asset, result)));
+      setCryptoPriceMap(
+        result.reduce((sum, coin) => {
+          sum[coin.id] = coin.price;
+          return sum;
+        }, {})
+      );
       setLoading(false);
     }
 
@@ -43,7 +51,9 @@ export function CryptoContextProvider({ children }) {
   };
 
   return (
-    <CryptoContext.Provider value={{ loading, crypto, assets, addAsset }}>
+    <CryptoContext.Provider
+      value={{ loading, crypto, assets, addAsset, cryptoPriceMap }}
+    >
       {children}
     </CryptoContext.Provider>
   );
