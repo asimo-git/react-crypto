@@ -8,10 +8,20 @@ export function fakeFetchCripto() {
   });
 }
 
-export function fakeFetchAssets() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(cryptoAssets);
-    }, 1);
-  });
+export function fetchAssetsFromLocalStorage() {
+  const data = localStorage.getItem("cryptoAssets");
+
+  if (!data) return [];
+
+  try {
+    const parsedData = JSON.parse(data);
+
+    return parsedData.map((asset) => ({
+      ...asset,
+      date: new Date(asset.date),
+    }));
+  } catch (error) {
+    console.error("Error parsing data from localStorage:", error);
+    return [];
+  }
 }
