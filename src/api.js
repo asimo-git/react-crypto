@@ -1,11 +1,17 @@
-import { cryptoAssets, cryptoData } from "./data";
-
-export function fakeFetchCripto() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(cryptoData);
-    }, 1);
-  });
+export async function fetchCripto() {
+  try {
+    const data = await fetch("/api/coins", {
+      headers: {
+        accept: "application/json",
+        "X-API-KEY": "TsxGJIesuKiplGo02kDrWB7PKGuXj0el2oVC6bXolEU=",
+      },
+    });
+    const cryptoData = await data.json();
+    return cryptoData;
+  } catch (error) {
+    console.error("Error fetching data from openapiv1.coinstats.app", error);
+    return { result: "error" };
+  }
 }
 
 export function fetchAssetsFromLocalStorage() {
